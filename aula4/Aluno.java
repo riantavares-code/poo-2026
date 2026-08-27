@@ -37,44 +37,41 @@ public class Aluno {
     }
     public static void main(String[] args) {
         Aluno resValido = new Aluno("Juan", 20, "2023001");
-        Paciente p1 = new Paciente("Zica", 25, "12345", resValido);
-        System.out.println("Paciente 1: " + p1.getNome() + " | Atendido por: " + p1.getAlunoResponsavel().getNome());
-        Paciente p2 = new Paciente();
-        System.out.println("Paciente 2 (Padrão): " + p2.getNome() + " | Atendido por: " + p2.getAlunoResponsavel().getNome());
+        Professor p1 = new Professor("Zica", 25, "12345", resValido);
+        System.out.println("Professor 1: " + p1.getNome() + " | Atendido por: " + p1.getAlunoResponsavel().getNome());
+        Professor p2 = new Professor();
+        System.out.println("Professor 2 (Padrão): " + p2.getNome() + " | Atendido por: " + p2.getAlunoResponsavel().getNome());
         p1.setNome("");
         p1.setIdade(0);
         p1.setAlunoResponsavel(null);
         Aluno resInvalido = new Aluno("", -5, "");
     }
 }
-class Paciente {
+class Professor {
     private String nome;
     private int idade;
     private String cod_Iden;
-    private Aluno AlunoResponsavel;
-    public Paciente() {
+    public Professor() {
         this("sem", 1, "sem", new Aluno());
     }
-    public Paciente(String nome, int idade, String cod_Iden, Aluno AlunoResponsavel) {
+    public Professor(String nome, int idade, String cod_Iden) {
         this.setNome(nome);
         this.setIdade(idade);
         this.setCod_Iden(cod_Iden);
-        this.setAlunoResponsavel(AlunoResponsavel);
     }
     public String getNome() { return nome; }
     public int getIdade() { return idade; }
     public String getCod_Iden() { return cod_Iden; }
-    public Aluno getAlunoResponsavel() { return AlunoResponsavel; }
     public void setNome(String nome) {
         if (nome == null || nome.isEmpty()) {
-            System.out.println("ERRO, nome do paciente vazio\n");
+            System.out.println("ERRO, nome do professor vazio\n");
         } else {
             this.nome = nome;
         }
     }
     public void setIdade(int idade) {
         if (idade <= 0) {
-            System.out.println("ERRO, idade do paciente inválida\n");
+            System.out.println("ERRO, idade do Professor inválida\n");
         } else {
             this.idade = idade;
         }
@@ -84,13 +81,6 @@ class Paciente {
             System.out.println("ERRO, código de identificação vazio\n");
         } else {
             this.cod_Iden = cod_Iden;
-        }
-    }
-    public void setAlunoResponsavel(Aluno AlunoResponsavel) {
-        if (AlunoResponsavel == null) {
-            System.out.println("ERRO, paciente precisa de um Aluno responsável válido\n");
-        } else {
-            this.AlunoResponsavel = AlunoResponsavel;
         }
     }
 }
