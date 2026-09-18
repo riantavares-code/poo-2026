@@ -1,57 +1,61 @@
-import java.util.ArrayList;
 public abstract class Personagem{
     public abstract String habilidade();
     protected  String nome;
     protected int vida;
     protected int nivel;
     protected int forca;
-    private ArrayList<Item> inventario;
+    private Item[] inventario;
+    private int quantidade_item;
     public Personagem(String nome, int vida, int nivel, int forca){
         this.nome = nome;
-        this.vida = vida;
         this.nivel = nivel;
-        this.forca = forca;
-        this.inventario = new ArrayList<Item>();
+        this.setVida(vida);
+        this.setForca(forca);
+        inventario = new Item[10];
+        quantidade_item = 0;
     }
     public String getNome(){return this.nome;}
     public int getVida(){return this.vida;}
     public int getNivel(){return this.nivel;}
     public int getForca(){return this.forca;}
+
     public void pegar(Item item){
-        if(item != null){
-            this.inventario.add(item);
-        }else{System.out.println("ERRO, item nulo\n");}
+        if(item == null){ 
+            System.out.println("ERRO, item nulo\n");
+            return;
+        }
+        if(quantidade_item < inventario.length){
+            inventario[quantidade_item] = item;
+            quantidade_item++;
+        }else System.out.println("Inventario cheio");
     }
     public void setNome(String nome){
         if (nome == null || nome.isEmpty()){
-            System.out.println("ERRO, nome vazio\n");
-        }else{this.nome = nome;}
-    }
-    public void setVida(int vida){
-        if (vida >= 0){
-        this.vida = vida;
-        }else{System.out.println("ERRO, vida fora do limite definido\n");}
+            throw new IllegalArgumentException("Nome inválido: " + nome);
+        }
+        this.nome = nome;
     }
     public void setNivel(int nivel){
-        if (nivel >= 1){
-        this.nivel = nivel;
+        if (nivel < 1){
+            System.out.println("Nivel nao pode ser menor que 1");
         }else{
-            System.out.println("ERRO, nivel abaixo do minimo\n");
-        }
-    }public void setForca(int forca){
-        if (forca >= 0){
-            this.forca = forca;
-        }else{
-            System.out.println("ERRO, forca negativa\n");
+            this.nivel = nivel;
         }
     }
-    public void setHabilidade(String habilidade){
+    public void setVida(int vida){
+        if (vida > 200)throw new IllegalArgumentException("Vida nao pode ser negativa: " + vida);
+        if (vida < 0) this.vida = 0;
+        this.vida = vida;
     }
-    public void atacar(Personagem alvo){
+    public void setForca(int forca){
+        if (forca < 0)throw new IllegalArgumentException("Forca nao pode ser negativa: " + forca);
+        this.forca = forca;
+    }
+    public void atacar(Personagem alvo) throws SemMana{
         if (alvo != null) {
             int danoTotal = this.forca;
-            for (Item i : this.inventario) {
-                danoTotal += i.getBonus();
+            for (int i = 0; i < quantidade_item; i++){
+                danoTotal += this.inventario[i].getBonus();
             }
             alvo.setVida(alvo.getVida() - danoTotal);
             System.out.println(this.nome + " atacou " + alvo.getNome() + " causando " + danoTotal + " de dano total!");
@@ -59,19 +63,25 @@ public abstract class Personagem{
                 System.out.println("ERRO: Nao ha alvo para atacar.\n");
         }
     }
+    public void GolpeEspecial(String habilidade, int custoForca) throws SemForca {
+        if (this.forca < custoForca) {
+            throw new SemForca(this.forca);
+        }
+        this.forca -= custoForca; // Consome a força do personagem
+        System.out.println(this.nome + " usou o golpe especial '" + habilidade + "' gastando " + custoForca + " de força!");
+    }
     public void ficha(){
-        System.out.println("\nPersonagem");
         System.out.println("Nome: " + this.nome);
         System.out.println("Vida: " + this.vida);
         System.out.println("Nivel: " + this.nivel);
         System.out.println("Forca: " + this.forca);
         System.out.println("Habilidade: " + habilidade());
         System.out.println("Inventario: ");
-        if(inventario.isEmpty()){
+        if(this.quantidade_item == 0){
             System.out.println("Inventario vazio");
         }else{
-            for(Item item : inventario){
-                System.out.println(item.Descricao());
+            for(int i = 0; i < quantidade_item; i++){
+                System.out.println(inventario[i].Descricao());
             }
         }
     }
