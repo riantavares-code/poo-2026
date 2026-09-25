@@ -1,4 +1,4 @@
-class SemForcaError(Exception):
+class SemForca(Exception):
     def __init__(self, forca: int):
         super().__init__(f"Forca insuficiente: {forca}")
         self._forcaAtual = forca
