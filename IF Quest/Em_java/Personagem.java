@@ -7,8 +7,8 @@ public abstract class Personagem{
     private Item[] inventario;
     private int quantidade_item;
     public Personagem(String nome, int vida, int nivel, int forca){
-        this.nome = nome;
         this.nivel = nivel;
+        this.setNome(nome);
         this.setVida(vida);
         this.setForca(forca);
         inventario = new Item[10];
@@ -30,7 +30,7 @@ public abstract class Personagem{
         }else System.out.println("Inventario cheio");
     }
     public void setNome(String nome){
-        if (nome == null || nome.isEmpty()){
+        if (nome == null || nome.trim().isEmpty()){
             throw new IllegalArgumentException("Nome inválido: " + nome);
         }
         this.nome = nome;
@@ -44,8 +44,9 @@ public abstract class Personagem{
     }
     public void setVida(int vida){
         if (vida > 200)throw new IllegalArgumentException("Vida nao pode ser negativa: " + vida);
-        if (vida < 0) this.vida = 0;
-        this.vida = vida;
+        if (vida < 0){
+            this.vida = 0;
+        }else this.vida = vida;
     }
     public void setForca(int forca){
         if (forca < 0)throw new IllegalArgumentException("Forca nao pode ser negativa: " + forca);
@@ -81,7 +82,7 @@ public abstract class Personagem{
             System.out.println("Inventario vazio");
         }else{
             for(int i = 0; i < quantidade_item; i++){
-                System.out.println(inventario[i].Descricao());
+                System.out.println(inventario[i].descricao());
             }
         }
     }
