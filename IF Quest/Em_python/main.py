@@ -1,71 +1,73 @@
-from Personagem import Personagem
-from Item import Item
+import sys
 from Mago import Mago
-from Chefe import Chefe
 from Guerreiro import Guerreiro
-from SemManaError import SemManaError
+from Chefe import Chefe
+from Item import Item
+from SemMana import SemMana
+from TelaCriacaoHeroi import TelaCriacaoHeroi
+from TelaCriacaoHeroiFlow import TelaCriacaoHeroiFlow
 
-if __name__ == "__main__":
-    ginvalido = None
-    m = None
+def main():
+    TelaCriacaoHeroi()
+    telaFlow = TelaCriacaoHeroiFlow()
+    
     g = None
+    mvalido = None
+    minvalido = None
     c = None
-    ip = None
     ig = None
-    
-    print("teste de criacao")
+    im = None
+
+    print("teste de invalido")
     try:
-        ginvalido = Guerreiro("Legolas", -11, 8, 54) # criacao de invalido
+        minvalido = Mago("Hermione", -100, 33, 44)
     except ValueError as e:
-        print(f"Captura de erro com sucesso")
-        
-    try: 
-        m = Mago("Gandalf", 100, 5, 20)
-        g = Guerreiro("Anao", 100, 4, 25)
-        c = Chefe("Sauron")
-        ip = Item("Cajado eletrico", 10)
-        ig = Item("Machado duplo", 5)
+        print("Captura de erro com sucesso: " + str(e))
+
+    print("criacao de personagem")
+    try:
+        ig = Item("Manopla", 3)
+        im = Item("Varinha de cedro", 5)
+        c = Chefe("Rabo-Corneo Hungaro")
+        mvalido = Mago("Dumblodore", 100, 78, 65)
+        g = Guerreiro("Hagrid", 100, 66, 50)
     except ValueError as e:
-        print(f"Erro no personagem: {e}")
-        
-    if g is not None and c is not None and m is not None:
+        print("Erro no personagem: " + str(e))
+
+    if g is not None and c is not None and mvalido is not None:
         g.pegar(ig)
-        m.pegar(ip)
-    
-        grupo = []
-        grupo.append(g)
-        grupo.append(m)
-        
-        print("-----Batalha-----")
-        while(c.vida > 0):
-            for heroi in grupo:
-                if c.vida <= 0:
+        mvalido.pegar(im)
+        Grupo = []
+        Grupo.append(g)
+        Grupo.append(mvalido)
+        print("Comeco\n")
+        while c.getVida() > 0:
+            for heroi in Grupo:
+                if c.getVida() <= 0:
                     break
                 heroi.ficha()
-                
-                # O bloco try agora engloba a habilidade e o ataque
+                print(heroi.getNome() + " usa" + heroi.habilidade())
                 try:
-                    print(f"{heroi.nome} usa {heroi.habilidade()}")
                     heroi.atacar(c)
-                except SemManaError as e:
-                    print(f"{heroi.nome} falhou ao atacar")
-                    print(f"Motivo: {e}")
-                    print(f"{heroi.nome} perdeu o turno")
+                except SemMana as e:
+                    print(heroi.getNome() + " Falha: " + str(e))
+                    print(heroi.getNome() + " Turno passado")
                 finally:
-                    if c.vida < 0:
-                        c.vida = 0
-                    print("Final do turno")   
-                                 
-        print("---status do chefe---")
-        c.ficha()
-        
-        print("Verificacao de mago")
-        for heroi in grupo:
-            if isinstance(heroi, Mago):
-                print(f"{heroi.nome} tem {heroi.mana} de mana.")
-    
-    # Comentario de esplicacao:
-    # Dentro da batalha não usamos checagem de tipo para respeitar o POLIMORFISMO puro,
-    # onde tratamos todos como personagem e a cod descobre o método certo sozingho.
-    # Fora do laço o uso do isinstance é aceitável pois serve para ler um atributo específico
-    # e exclusivo do Mago, que a classe mãe não conhece.
+                    if c.getVida() < 0:
+                        c.setVida(0)
+                    print("Final do turno")
+            print("\nStatus final do ")
+            c.ficha()
+            print("\nVerificacao de mago", file=sys.stderr)
+            for heroi in Grupo:
+                if isinstance(heroi, Mago):
+                    mago = heroi
+                    print("Mago: " + mago.getNome() + "\nMana: " + str(mago.getMana()))
+
+# Dentro da batalha não usamos checagem de tipo para respeitar o POLIMORFISMO,
+# onde tratamos todos como personagem e a linguagem descobre o método correto sozinha.
+# Fora do laço o uso do instanceof é aceitável pois serve para ler um atributo específico
+# e exclusivo de Mago mana, que a classe genérica mãe não conhece.
+
+if __name__ == "__main__":
+    main()
