@@ -1,30 +1,32 @@
-public class Guerreiro extends Personagem{
-    private int defesa;
-    public Guerreiro(String nome, int vida, int nivel, int forca){
+public class Mago extends Personagem{
+    private int mana;
+    public Mago(String nome, int vida, int nivel, int forca){
         super(nome, vida, nivel, forca);
-        this.setDefesa(5);
+        this.setMana(50);
     }
-    public int getDefesa() {
-        return defesa;
+    public int getMana(){
+        return mana;
     }
-    public void setDefesa(int defesa){
-        if(defesa < 0){
-            throw new IllegalArgumentException("Defesa nao pode ser negativa: " + defesa);
+    public void setMana(int mana){
+        if(mana < 0){
+            throw new IllegalArgumentException("Mana nao pode ser negativa: " + mana);
         }
-        this.defesa = defesa;
+        this.mana = mana;
     }
     @Override
     public String habilidade(){
-        return "Soco poderoso";
+        return "Expelliarmus";
     }
     @Override
     public void atacar(Personagem alvo) throws SemMana{
+        if(this.mana < 10) throw new SemMana(this.mana);
+        this.mana -= 10;
         super.atacar(alvo);
     }
     @Override
     public void ficha(){
-        System.out.println("\nGuerreiro");
+        System.out.println("\nMago");
         super.ficha();
-        System.out.println("Defesa: " + this.defesa);
+        System.out.println("Mana: " + this.mana);
     }
 }
